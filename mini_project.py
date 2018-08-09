@@ -10,19 +10,39 @@ import turtle
 import random #We'll need this later in the lab
 import time
 turtle.tracer(1,0)
-food_pos = [(100,100), (-100,100), (-100,-100), (100,-100)]
+food_pos = []
 food_stamps = []
 TIME_STEP = 500
 score=0
 START_LENGTH = 4
 UP=0
+SIZE_X=1000
+SIZE_Y=1000
+turtle.setup(SIZE_X, SIZE_Y)
 direction = UP
-
+line=turtle.Turtle() #draw the squre
+line.penup()
+line.goto(250,250)
+line.left(180)
+line.pendown()
+line.pensize(5)
+line.forward(500)
+line.left(90)
+line.forward(500)
+line.left(90)
+line.forward(500)
+line.left(90)
+line.forward(500)
+line.hideturtle()
+turtle.penup()
+snake_color=["red","yellow","green","blue","orange","black","purple","light blue","turquoise"]
+turtle.color(random.choice(snake_color))
+turtle.goto(-350,300)
+turtle.write("welcome to the snake game!",font=("Arial",45,"normal"))
+turtle.goto(0,0)
 def snake_game():
-    SIZE_X=800
-    SIZE_Y=500
-    turtle.setup(SIZE_X, SIZE_Y) #Curious? It's the turtle window  
-                                 #size. 
+    global turtle
+                #size. 
     turtle.penup()
 
     SQUARE_SIZE = 20
@@ -32,11 +52,12 @@ def snake_game():
     stamp_list = []
     food_pos = []
     food_stamps = []
+    snake_color=["red","yellow","green","blue","orange","black","purple","light blue","turquoise"]
+    turtle.color(random.choice(snake_color))
    
     #Set up positions (x,y) of boxes that make up the snake
     snake = turtle.clone()
-    snake.shape("square")
-    turtle.bgcolor("green")
+    snake.shape("circle")
 
     #Hide the turtle object (it's an arrow - we don't need to see it)
     turtle.hideturtle()
@@ -87,11 +108,6 @@ def snake_game():
     turtle.register_shape("trash.gif")
     food = turtle.clone()
     food.shape("trash.gif") 
-    for this_food_pos in (food_pos):
-        food.penup()
-        food.goto(this_food_pos)
-        this_stamp = food.stamp()
-        food_stamps.append(this_stamp)
 
 
 
@@ -129,10 +145,10 @@ def snake_game():
         #The screen positions go from -SIZE/2 to +SIZE/2
         #But we need to make food pieces only appear on game squares
         #So we cut up the game board into multiples of SQUARE_SIZE.
-        min_x=-int(SIZE_X/2/SQUARE_SIZE)+1
-        max_x=int(SIZE_X/2/SQUARE_SIZE)-1
-        min_y=-int(SIZE_Y/2/SQUARE_SIZE)-1
-        max_y=int(SIZE_Y/2/SQUARE_SIZE)+1
+        min_x=-int(250/2/SQUARE_SIZE)+1
+        max_x=int(250/2/SQUARE_SIZE)-1
+        min_y=-int(250/2/SQUARE_SIZE)-1
+        max_y=int(250/2/SQUARE_SIZE)+1
         
         #Pick a position that is a random multiple of SQUARE_SIZE
         food_x = random.randint(min_x,max_x)*SQUARE_SIZE
@@ -147,7 +163,7 @@ def snake_game():
         global food_stamps, food_pos, START_LENGTH,score,TIME_STEP,direction
         x_pos=snake.pos()[0] 
         y_pos=snake.pos()[1]
-        if len(food_stamps) <= 3 :
+        if len(food_stamps) <=6 :
             make_food()
 
         if direction==RIGHT:
@@ -172,30 +188,44 @@ def snake_game():
         pos_list.append(my_pos)
         new_stamp = snake.stamp()
         stamp_list.append(new_stamp)
-        if new_x_pos >= RIGHT_EDGE:
-            print("you hit the right edge! Game over!")
-            time.sleep(5)
-        elif new_x_pos <= LEFT_EDGE:
-            print("you hit the left edge! Game over!")
-            time.sleep(5)
-        elif new_y_pos >= UP_EDGE:
-            print("you hit the up edge! Game over!")
-            time.sleep(5)
-        elif new_y_pos <= DOWN_EDGE:
-            print("you hit the down edge! Game over!" +"yout score is " + str(score))
-            time.sleep(5)
+        if new_x_pos >= 250:
+             turtle.goto(-400,150)
+             turtle.write("game over! your score is: ", font=("Arial",55 , "normal"))
+             turtle.goto(-100,75)
+             turtle.write(str(score),font=("Arial", 55, "normal"))
+             turtle.done()
+        elif new_x_pos <= -250:
+             turtle.goto(-400,150)
+             turtle.write("game over! your score is: ", font=("Arial",55 , "normal"))
+             turtle.goto(-100,75)
+             turtle.write(str(score),font=("Arial", 55, "normal"))
+             turtle.done()
+        elif new_y_pos >= 250:
+             turtle.goto(-400,150)
+             turtle.write("game over! your score is: ", font=("Arial",55 , "normal"))
+             turtle.goto(-100,75)
+             turtle.write(str(score),font=("Arial", 55, "normal"))
+             turtle.done()
+             
+        elif new_y_pos <= -250:
+            turtle.goto(-400,150)
+            turtle.write("game over! your score is: ", font=("Arial",55 , "normal"))
+            turtle.goto(-100,75)
+            turtle.write(str(score),font=("Arial", 55, "normal"))
+            turtle.done()
+            
         
     #    ######## SPECIAL PLACE - Remember it for Part 5
         if snake.pos() in food_pos:
-            food_ind=food_pos.index(snake.pos()) #What does this do?
-            food.clearstamp(food_stamps[food_ind]) #Remove eaten food                 
-                                               #stamp
-            food_pos.pop(food_ind) #Remove eaten food position
+            food_ind=food_pos.index(snake.pos())
+            #What does this do?
+            food.clearstamp(food_stamps[food_ind])
+            snake.color(random.choice(snake_color))               
+            food_pos.pop(food_ind) 
             food_stamps.pop(food_ind)
             score+=100
-            print("your score is " + str(score))
-            if TIME_STEP >=20:
-                TIME_STEP-=20
+            if TIME_STEP >=40:
+                TIME_STEP-=40
         else:
             old_stamp = stamp_list.pop(0)
             snake.clearstamp(old_stamp)
@@ -203,8 +233,11 @@ def snake_game():
             
              #Remove eaten food stamp
         if snake.pos() in pos_list[:-1]:
-            print("game over!the head touched the body! your score is: " +str(score))
-            turtle.done()
+             turtle.goto(-400,150)
+             turtle.write("game over! your score is: ", font=("Arial",55 , "normal"))
+             turtle.goto(-100,75)
+             turtle.write(str(score),font=("Arial", 55, "normal"))
+             turtle.done()
 
             
         turtle.ontimer(move_snake,TIME_STEP)#end loop
