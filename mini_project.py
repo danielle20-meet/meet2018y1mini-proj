@@ -238,6 +238,7 @@ def snake_game():
              turtle.goto(-100,75)
              turtle.write(str(score),font=("Arial", 55, "normal"))
              turtle.done()
+             
 
             
         turtle.ontimer(move_snake,TIME_STEP)#end loop
